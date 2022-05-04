@@ -1,23 +1,38 @@
-import logo from './logo.svg';
+//IMPORTS
 import './App.css';
+import "bootstrap/dist/css/bootstrap.min.css"
+import axios from "axios"
+//COMPONENTS
+import Navbar from './components';
+import TableName from './components/body';
 
+//HOOKS
+import { useState, useEffect } from 'react';
+
+//FUNCTION MAIN
 function App() {
+  const [users, setUsers] = useState([]);
+  const [tableUsers, setTableUsers] = useState([]);
+  const [search, setSearch] = useState("");
+
+  const requestGet = async () => {
+    await axios.get("https://jsonplaceholder.typicode.com/users")
+    .then(response => {
+        setUsers(response.data)
+        setTableUsers(response.data)
+    }).catch(error => {
+        console.log(error)
+    })
+}
+
+useEffect(() => {
+    requestGet();
+}, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navbar changeSearch={setSearch} search={search} tableUsers={tableUsers} users={setUsers}/>
+      <TableName userState={users}/>
     </div>
   );
 }
